@@ -17,6 +17,23 @@ app.use (express.json({limit:'25Mb'}));
 
 //CONFIGURAR MYSQL
 
+const getConnection = async () => {
+    
+    const connection = await mysql.createConnection ({
+        host: process.env.MYSQL_HOST, 
+        user: process.env.MYSQL_USER,
+        password: process.env.MYSQL_PASS,
+        database: process.env.MYSQL_SCHEMA
+    });
+
+    await connection.connect();
+
+    console.log(
+        `Conexión establecida con la base de datos (identificador=${connection})`
+    );
+
+    return connection;
+};
 
 //ARRANCAR EL SERVIDOR
 
