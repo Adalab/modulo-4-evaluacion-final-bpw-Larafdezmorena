@@ -90,17 +90,13 @@ app.get('/api/recetas/:id', async (req, res) => {
 
 //Crear una nueva receta (POST /api/recetas)
 
-const createErrorResponse = (message) => {
-    return {
-        succes: false,
-        error: message
-    };
-}
-
 app.post('/api/recetas', async (req, res) => {
     const {nombre, ingredientes, instrucciones} = req.body;
-    if (!req.body || req.body === '') {
-        res.status(400).json(createErrorResponse ('Debes rellenar todos los campos'));
+    if (!nombre || !ingredientes || !instrucciones) {
+        res.status(400).json({
+            success: false,
+            message: "Debes completar todos los campos"
+        });
         return;
     }
     const conn = await getConnection();
@@ -121,6 +117,7 @@ app.post('/api/recetas', async (req, res) => {
         id: results.insertId,
         message: "Tu receta ha sido añadida"
     });
+    
 });
 
 //Actualizar una receta existente (PUT /api/recetas/:id)
