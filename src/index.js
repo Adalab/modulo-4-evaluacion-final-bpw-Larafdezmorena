@@ -39,9 +39,46 @@ const getConnection = async () => {
 //ARRANCAR EL SERVIDOR
 
 app.listen (port, () => {
-    console.log(`Server has been started in <http://localhost:${port}`);
+    console.log(`Server has been started in <http://localhost:${port}>`);
 })
 
 //ENDPOINTS
 
-getConnection();
+//Obtener todas las recetas (GET /api/recetas):
+
+app.get('/api/recetas', async (req, res) => {
+    
+    const conn = await getConnection();
+
+    const queryGetRecetas = `
+    SELECT * FROM recetas;
+    `;
+
+    const [results] = await conn.query(queryGetRecetas);
+    
+    res.json(results);
+});
+
+//Obtener una receta por su ID (GET /api/recetas/:id)
+
+app.get('/api/recetas', (req, res) => {
+
+});
+
+//Crear una nueva receta (POST /api/recetas)
+
+app.post('/api/recetas', (req, res) => {
+
+});
+
+//Actualizar una receta existente (PUT /api/recetas/:id)
+
+app.put('/api/recetas', (req, res) => {
+
+});
+
+//Eliminar una receta (DELETE /api/recetas/:id)
+
+app.delete('/api/recetas', (req, res) => {
+
+});
