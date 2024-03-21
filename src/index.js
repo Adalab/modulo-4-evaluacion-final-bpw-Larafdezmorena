@@ -84,27 +84,53 @@ app.get('/api/recetas/:id', async (req, res) => {
         res.json(results);
     }
 
-    console.log(`pidiendo receta por el id ${req.params.id}`);
     conn.end();
 
 });
 
-
-
 //Crear una nueva receta (POST /api/recetas)
 
-app.post('/api/recetas', (req, res) => {
+const createErrorResponse = (message) => {
+    return {
+        succes: false,
+        error: message
+    };
+}
 
+app.post('/api/recetas', async (req, res) => {
+    const {nombre, ingredientes, instrucciones} = req.body;
+    if (!req.body || req.body === '') {
+        res.status(400).json(createErrorResponse ('Debes rellenar todos los campos'));
+        return;
+    }
+    const conn = await getConnection();
+
+    const newRecipe = [nombre, ingredientes, instrucciones];
+
+    const queryNewRecipe = `
+    INSERT INTO recetas(nombre, ingredientes, instrucciones )
+    VALUES (?, ?, ?)
+    `;
+
+    const [results] = await conn.execute(queryNewRecipe, newRecipe);
+
+    conn.end();
+    
+    res.json ({
+        success: true,
+        id: results.insertId,
+        message: "Tu receta ha sido añadida"
+    });
 });
 
 //Actualizar una receta existente (PUT /api/recetas/:id)
 
-app.put('/api/recetas', (req, res) => {
+app.put('/api/recetas', async (req, res) => {
 
 });
 
 //Eliminar una receta (DELETE /api/recetas/:id)
 
-app.delete('/api/recetas', (req, res) => {
+app.delete('/api/recetas', async (req, res) => {
 
 });
