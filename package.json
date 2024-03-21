@@ -1,0 +1,22 @@
+{
+  "name": "modulo-4-evaluacion-final-bpw-larafdezmorena",
+  "version": "1.0.0",
+  "description": "ejercicio de la evaluación final del módulo 4 de Adalab",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js",
+    "deploy": "rm -rf docs ; npm run build && mv dist docs && git add docs && git commit -m 'Update github Pages.' && git push"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Adalab/modulo-4-evaluacion-final-bpw-Larafdezmorena.git"
+  },
+  "author": "Lara Fernández Morena",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Adalab/modulo-4-evaluacion-final-bpw-Larafdezmorena/issues"
+  },
+  "homepage": "https://github.com/Adalab/modulo-4-evaluacion-final-bpw-Larafdezmorena#readme"
+}
