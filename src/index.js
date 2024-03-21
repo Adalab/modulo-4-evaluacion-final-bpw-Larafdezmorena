@@ -57,13 +57,39 @@ app.get('/api/recetas', async (req, res) => {
     const [results] = await conn.query(queryGetRecetas);
     
     res.json(results);
+
+    conn.end();
 });
 
 //Obtener una receta por su ID (GET /api/recetas/:id)
 
-app.get('/api/recetas', (req, res) => {
+app.get('/api/recetas/:id', async (req, res) => {
+    
+    const recipeId = req.params.id;
+
+    const queryGetRecipesId = `
+    SELECT * FROM recetas WHERE id = ?
+    `;
+    
+    const conn = await getConnection();
+
+    const [results] = await conn.query(queryGetRecipesId, [recipeId]);
+
+    if (results.length === 0) {
+        res.json({
+            success: false,
+            error: "No hemos podido encontrar tu receta"
+        });
+    } else {
+        res.json(results);
+    }
+
+    console.log(`pidiendo receta por el id ${req.params.id}`);
+    conn.end();
 
 });
+
+
 
 //Crear una nueva receta (POST /api/recetas)
 
