@@ -48,6 +48,7 @@ app.listen (port, () => {
 
 app.get('/api/recetas', async (req, res) => {
     
+    try {
     const conn = await getConnection();
 
     const queryGetRecetas = `
@@ -55,15 +56,23 @@ app.get('/api/recetas', async (req, res) => {
     `;
 
     const [results] = await conn.query(queryGetRecetas);
+    conn.end();
     
     res.json(results);
 
-    conn.end();
+    
+}catch (error) {
+    res.json ({
+        success: false,
+        message: "Fallo en la base de datos"
+    });
+}
 });
 
 //Obtener una receta por su ID (GET /api/recetas/:id)
 
 app.get('/api/recetas/:id', async (req, res) => {
+    try {
     
     const recipeId = req.params.id;
 
@@ -75,6 +84,8 @@ app.get('/api/recetas/:id', async (req, res) => {
 
     const [results] = await conn.query(queryGetRecipesId, [recipeId]);
 
+    conn.end();
+
     if (results.length === 0) {
         res.json({
             success: false,
@@ -84,13 +95,18 @@ app.get('/api/recetas/:id', async (req, res) => {
         res.json(results);
     }
 
-    conn.end();
-
+}catch (error) {
+        res.json ({
+            success: false,
+            message: "Fallo en la base de datos"
+        });
+    }
 });
 
 //Crear una nueva receta (POST /api/recetas)
 
 app.post('/api/recetas', async (req, res) => {
+    try {
     const {nombre, ingredientes, instrucciones} = req.body;
     if (!nombre || !ingredientes || !instrucciones) {
         res.status(400).json({
@@ -117,6 +133,12 @@ app.post('/api/recetas', async (req, res) => {
         id: results.insertId,
         message: "Tu receta ha sido añadida"
     });
+}catch (error) {
+        res.json ({
+            success: false,
+            message: "Fallo en la base de datos"
+        });
+    }
     
 });
 
@@ -147,18 +169,37 @@ app.put('/api/recetas/:id', async (req, res) => {
         });
     }
 } catch (error) {
-    console.error("Error al actualizar la receta:", error);
-    res.status(500).json({
+    res.json ({
         success: false,
-        message: "Error interno del servidor al actualizar la receta"
+        message: "Fallo en la base de datos"
     });
 }
 });
 
 //Eliminar una receta (DELETE /api/recetas/:id)
 
-app.delete('/api/recetas', async (req, res) => {
+app.delete('/api/recetas/:id', async (req, res) => {
+try{
+ const conn = await getConnection();
 
+ const deleteRecipe = `
+ DELETE FROM recetas WHERE id=?`;
  
+ const [deleteResult] = await conn.execute (deleteRecipe, [req.params.id]);
+
+ conn.end();
+
+ res.json ({
+    success: true,
+    message: "La receta ha sido eliminada"
+ });
+}
+catch (error) {
+    res.json ({
+        success: false,
+        message: "Fallo en la base de datos"
+    });
+}
 
 });
+
