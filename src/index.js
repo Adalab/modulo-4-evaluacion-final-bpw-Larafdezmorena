@@ -122,12 +122,43 @@ app.post('/api/recetas', async (req, res) => {
 
 //Actualizar una receta existente (PUT /api/recetas/:id)
 
-app.put('/api/recetas', async (req, res) => {
+app.put('/api/recetas/:id', async (req, res) => {
+    try {
+      
+    const conn = await getConnection();
 
+    const updateRecipe = `
+    UPDATE recetas
+    SET nombre = ?, ingredientes = ?, instrucciones = ?
+    WHERE (id = ?);
+    `;
+
+    const [updatedResults] = await conn.execute(updateRecipe, [req.body.nombre, req.body.ingredientes, req.body.instrucciones, req.params.id]);
+    conn.end();
+    if (updatedResults.affectedRows > 0) {
+        res.json({
+            success: true,
+            message: "Tu receta ha sido actualizada correctamente"
+        });
+    } else {
+        res.status(404).json({
+            success: false,
+            message: "No hemos podido encontrar la receta que intentas actualizar"
+        });
+    }
+} catch (error) {
+    console.error("Error al actualizar la receta:", error);
+    res.status(500).json({
+        success: false,
+        message: "Error interno del servidor al actualizar la receta"
+    });
+}
 });
 
 //Eliminar una receta (DELETE /api/recetas/:id)
 
 app.delete('/api/recetas', async (req, res) => {
+
+ 
 
 });
