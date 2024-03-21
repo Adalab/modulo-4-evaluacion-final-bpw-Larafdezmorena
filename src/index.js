@@ -2,8 +2,9 @@
 
 const express = require ('express');
 const cors = require ('cors');
+require('dotenv').config();
 
-const mysql2 = require ('mysql2/promise');
+const mysql = require ('mysql2/promise');
 
 //CREAR VARIABLES
 
@@ -20,16 +21,16 @@ app.use (express.json({limit:'25Mb'}));
 const getConnection = async () => {
     
     const connection = await mysql.createConnection ({
-        host: process.env.MYSQL_HOST, 
-        user: process.env.MYSQL_USER,
+        host: process.env.MYSQL_HOST || 'localhost', 
+        user: process.env.MYSQL_USER || 'root',
         password: process.env.MYSQL_PASS,
-        database: process.env.MYSQL_SCHEMA
+        database: process.env.MYSQL_SCHEMA || 'recetas_db'
     });
 
     await connection.connect();
 
     console.log(
-        `Conexión establecida con la base de datos (identificador=${connection})`
+        `Conexión establecida con la base de datos (identificador=${connection.threadId})`
     );
 
     return connection;
@@ -42,3 +43,5 @@ app.listen (port, () => {
 })
 
 //ENDPOINTS
+
+getConnection();
